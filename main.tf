@@ -28,7 +28,7 @@ resource "aws_instance" "example" {
               systemctl start nginx
               systemctl enable nginx
               EOF
-  security_groups = [aws_security_group.allow_http.name]
+  security_groups = [aws_security_group.terraform_project_sg.name]
   key_name        = aws_key_pair.terraform_project_key.key_name
 
   tags = {
@@ -36,27 +36,34 @@ resource "aws_instance" "example" {
   }
 }
 
-# Create a security group that allows HTTP inbound traffic and all outbound traffic
-resource "aws_security_group" "allow_http" {
-  name        = "allow_http"
-  description = "Allow HTTP inbound traffic and all outbound traffic"
+# Create a security group that allows HTTP and SSH inbound traffic and all outbound traffic
+resource "aws_security_group" "terraform_project_sg" {
+  name        = "terraform_project_sg"
+  description = "Allow HTTP and SSH inbound traffic and all outbound traffic"
 
   tags = {
-    Name = "allow_http"
+    Name = "terraform_project_sg"
   }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv4" {
-  security_group_id = aws_security_group.allow_http.id
+  security_group_id = aws_security_group.terraform_project_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 80
   ip_protocol       = "tcp"
   to_port           = 80
 }
 
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4" {
+  security_group_id = aws_security_group.terraform_project_sg.id
+  cidr_ipv4         = "73.228.206.20/32"
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
-  security_group_id = aws_security_group.allow_http.id
+  security_group_id = aws_security_group.terraform_project_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
