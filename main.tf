@@ -28,9 +28,9 @@ resource "aws_instance" "example" {
               systemctl start nginx
               systemctl enable nginx
               EOF
-    security_groups = [aws_security_group.allow_http.name]
-    key_name        = aws_key_pair.terraform_project_key.key_name
-    
+  security_groups = [aws_security_group.allow_http.name]
+  key_name        = aws_key_pair.terraform_project_key.key_name
+
   tags = {
     Name = "TerraformExampleInstance"
   }
