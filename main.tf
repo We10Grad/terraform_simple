@@ -16,6 +16,7 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# Create an EC2 instance that runs a simple web server
 resource "aws_instance" "example" {
   ami             = data.aws_ami.ubuntu.id
   instance_type   = "t2.micro"
@@ -34,6 +35,7 @@ resource "aws_instance" "example" {
   }
 }
 
+# Create a security group that allows HTTP inbound traffic and all outbound traffic
 resource "aws_security_group" "allow_http" {
   name        = "allow_http"
   description = "Allow HTTP inbound traffic and all outbound traffic"
@@ -58,7 +60,9 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
-#resource "aws_key_pair" "deployer" {
-#  key_name   = "deployer-key"
-#  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3... user@hostname"
-#}
+
+resource "aws_key_pair" "terraform_project_key" {
+  key_name   = "terraform_project_key"
+  public_key = file("~/.ssh/aws_terraform_key.pub")
+}
+
