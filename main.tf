@@ -29,9 +29,10 @@ resource "aws_instance" "example" {
               systemctl enable nginx
               EOF
     security_groups = [aws_security_group.allow_http.name]
-
+    key_name        = aws_key_pair.terraform_project_key.key_name
+    
   tags = {
-    Name = "HelloWorld"
+    Name = "TerraformExampleInstance"
   }
 }
 
@@ -60,7 +61,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
-
+# Create an SSH key pair to access the EC2 instance
 resource "aws_key_pair" "terraform_project_key" {
   key_name   = "terraform_project_key"
   public_key = file("~/.ssh/aws_terraform_key.pub")
