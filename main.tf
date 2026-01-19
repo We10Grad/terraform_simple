@@ -74,3 +74,12 @@ resource "aws_key_pair" "terraform_project_key" {
   public_key = file("~/.ssh/aws_terraform_key.pub")
 }
 
+output "instance_id" {
+  description = "ID of the EC2 instance"
+  value       = aws_instance.example.id
+}
+
+output "instance_ip" {
+  description = "Private IP address of the EC2 instance"
+  value       = aws_instance.example.private_ip
+}
